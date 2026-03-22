@@ -660,7 +660,7 @@
 
     .ticker-track {
       display: flex;
-      animation: ticker-scroll 40s linear infinite;
+      animation: ticker-scroll 120s linear infinite;
     }
 
     .ticker-track:hover {
@@ -1036,7 +1036,40 @@
               <h1 class="section-title">GitHub AI Projects</h1>
               <p class="section-subtitle" id="githubSubtitle">Loading repositories…</p>
             </div>
+            <div class="view-switcher" id="githubControls">
+              <button class="view-btn active" onclick="setGithubView('table')">Table</button>
+              <button class="view-btn" onclick="setGithubView('card')">Card</button>
+              <button class="view-btn" onclick="setGithubView('poster')">Poster</button>
+            </div>
           </div>
+          <div id="githubError" class="hidden" style="text-align:center;padding:48px;color:#F59E0B;">Failed to load from GitHub. Showing cached data if available.</div>
+          <div id="githubSkeleton" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+          </div>
+          <div id="githubTableWrapper" class="hidden" style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px;">#</th>
+                  <th onclick="sortGithubByCol('name')">Repository</th>
+                  <th onclick="sortGithubByCol('stars')" style="text-align:right;">Stars</th>
+                  <th onclick="sortGithubByCol('forks')" style="text-align:right;">Forks</th>
+                  <th onclick="sortGithubByCol('issues')" style="text-align:right;">Issues</th>
+                  <th onclick="sortGithubByCol('language')">Language</th>
+                  <th onclick="sortGithubByCol('category')">Category</th>
+                  <th onclick="sortGithubByCol('license')">License</th>
+                  <th onclick="sortGithubByCol('updatedAt')">Updated</th>
+                  <th>Links</th>
+                </tr>
+              </thead>
+              <tbody id="githubTableBody"></tbody>
+            </table>
+          </div>
+          <div id="githubCardWrapper" class="card-grid hidden"></div>
+          <div id="githubPosterWrapper" class="card-grid hidden"></div>
+          <div id="githubPagination" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:24px;"></div>
         </section>
 
         <section class="content-section hidden" id="section-huggingface">
@@ -1045,7 +1078,18 @@
               <h1 class="section-title">Hugging Face</h1>
               <p class="section-subtitle">Top models, spaces, and datasets</p>
             </div>
+            <div class="view-switcher" id="hfControls">
+              <button class="view-btn active" onclick="setHFTab('models')">Models</button>
+              <button class="view-btn" onclick="setHFTab('spaces')">Spaces</button>
+            </div>
           </div>
+          <div id="hfError" class="hidden" style="text-align:center;padding:48px;color:#F59E0B;">Failed to load from Hugging Face.</div>
+          <div id="hfSkeleton" class="card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:20px;">
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+          </div>
+          <div id="hfGrid" class="card-grid hidden"></div>
         </section>
 
         <section class="content-section hidden" id="section-news">
@@ -1055,6 +1099,21 @@
               <p class="section-subtitle">Latest from AI providers</p>
             </div>
           </div>
+          <div class="news-tabs" id="newsTabs">
+            <button class="news-tab active" onclick="setNewsTab('all')">All Sources</button>
+            <button class="news-tab" onclick="setNewsTab('openai')">OpenAI</button>
+            <button class="news-tab" onclick="setNewsTab('anthropic')">Anthropic</button>
+            <button class="news-tab" onclick="setNewsTab('google')">Google AI</button>
+            <button class="news-tab" onclick="setNewsTab('huggingface')">HuggingFace</button>
+            <button class="news-tab" onclick="setNewsTab('others')">Others</button>
+          </div>
+          <div id="newsError" class="hidden" style="text-align:center;padding:48px;color:#F59E0B;">Failed to load news feeds.</div>
+          <div id="newsSkeleton" style="display:flex;flex-direction:column;gap:16px;">
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+          </div>
+          <div id="newsGrid" class="hidden" style="display:grid;gap:16px;"></div>
         </section>
 
         <section class="content-section hidden" id="section-archive">
