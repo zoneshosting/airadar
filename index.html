@@ -1163,9 +1163,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
             <span>Archive</span>
           </div>
-          <div class="nav-item" data-section="trending" onclick="navigateTo('trending')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <div class="nav-item" data-section="skills" onclick="navigateTo('skills')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             <span>Trending Skills</span>
+          </div>
+          <div class="nav-item" data-section="roles" onclick="navigateTo('roles')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Top Roles</span>
           </div>
         </nav>
 
@@ -1402,12 +1406,38 @@
           </div>
         </section>
 
-        <section class="content-section hidden" id="section-trending">
+        <section class="content-section hidden" id="section-skills">
           <div class="section-header">
             <div>
               <h1 class="section-title">Trending Skills</h1>
-              <p class="section-subtitle">Frameworks, tools, and model momentum</p>
+              <p class="section-subtitle">Categorize and analyze agent capabilities</p>
             </div>
+          </div>
+          <div class="view-switcher" style="display:flex;gap:10px;margin-bottom:20px;" id="skillsControls">
+            <button class="view-btn active" onclick="setSkillsTab('all')">All</button>
+            <button class="view-btn" onclick="setSkillsTab('claude code')">Claude Code</button>
+            <button class="view-btn" onclick="setSkillsTab('antigravity')">Antigravity</button>
+            <button class="view-btn" onclick="setSkillsTab('openclaw')">OpenClaw</button>
+          </div>
+          
+          <div id="skillsGrid" class="card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;">
+            <!-- Render via JS -->
+          </div>
+        </section>
+
+        <section class="content-section hidden" id="section-roles">
+          <div class="section-header" style="justify-content:space-between; display:flex; align-items:center;">
+            <div>
+              <h1 class="section-title">Top 100 Prompt Roles</h1>
+              <p class="section-subtitle">System instruction prompts for custom agent roles</p>
+            </div>
+            <div>
+              <input type="text" id="roleSearch" placeholder="Filter roles..." style="background:var(--bg-surface);border:1px solid var(--border-color);color:var(--text-primary);padding:8px 12px;border-radius:8px;font-size:0.875rem;" onkeyup="filterRoles(this.value)">
+            </div>
+          </div>
+          
+          <div id="rolesList" class="card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;margin-top:20px;">
+            <!-- Render via JS -->
           </div>
         </section>
       </main>
@@ -2419,8 +2449,9 @@ function navigateTo(section) {
   if (target) { target.classList.remove('hidden'); target.classList.add('fade-in'); }
   const navItem = document.querySelector(`.nav-item[data-section="${section}"]`);
   if (navItem) navItem.classList.add('active');
+  if (section === 'skills') renderSkills();
+  if (section === 'roles') renderRoles();
   if (section === 'archive') renderArchive();
-  if (section === 'trending') renderTrendingSkills();
   if (section === 'watchlist') renderWatchlist();
 }
 
@@ -2500,6 +2531,123 @@ function renderWatchlist() {
   container.innerHTML = html;
 }
 
+// ─── TRENDING SKILLS ─────────────────────────────────────────
+const mockSkills = [
+  { name: 'System Command Execution (skill.md)', agent: 'claude code', desc: 'Safe local bash operations executing background queries.', stars: 145 },
+  { name: 'Git Log Summarizer', agent: 'claude code', desc: 'Parses branches and generates automatic standard releases diff.', stars: 98 },
+  { name: 'Visual Canvas Matrix', agent: 'antigravity', desc: 'Multi-threaded view tracking concentric mesh particle graphics.', stars: 220 },
+  { name: 'Sequential Reasoning loop', agent: 'antigravity', desc: 'Continuous deep thinking step processing loops for reasoning.', stars: 310 },
+  { name: 'Realtime Audio Chunk Buffer', agent: 'openclaw', desc: 'Handles chunked low-latency streaming pipeline meshes for nodes.', stars: 165 },
+  { name: 'Distributed Mesh RPC loader', agent: 'openclaw', desc: 'Direct agent-to-agent safe message passing channels.', stars: 188 }
+];
+
+function setSkillsTab(tab) {
+  const container = document.getElementById('skillsControls');
+  if (container) {
+    container.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === tab));
+  }
+  renderSkills(tab);
+}
+
+function renderSkills(filter = 'all') {
+  const grid = document.getElementById('skillsGrid');
+  if (!grid) return;
+  
+  const items = filter === 'all' ? mockSkills : mockSkills.filter(s => s.agent.toLowerCase() === filter.toLowerCase());
+  
+  grid.innerHTML = items.map(s => `
+    <div class="card" style="padding:16px;background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;display:flex;flex-direction:column;gap:8px;transition:transform 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="badge" style="background:#1E2D4F;color:var(--accent-cyan);font-size:0.7rem;text-transform:uppercase;padding:2px 6px;border-radius:4px;">${escHtml(s.agent)}</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);">⭐ ${s.stars}</span>
+      </div>
+      <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);margin-top:4px;">${escHtml(s.name)}</div>
+      <div style="font-size:0.8125rem;color:var(--text-secondary);flex-grow:1;line-height:1.4;">${escHtml(s.desc)}</div>
+    </div>
+  `).join('');
+}
+
+// ─── TOP ROLES (PROMPTS) ─────────────────────────────────────
+let rolesData = [];
+
+function renderRoles() {
+  const grid = document.getElementById('rolesList');
+  if (!grid) return;
+
+  if (rolesData.length > 0) {
+    displayRoles(rolesData);
+    return;
+  }
+
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-secondary);">Loading top roles...</div>';
+
+  fetch('/.netlify/functions/news-proxy?url=https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv')
+    .then(r => r.text())
+    .then(csv => {
+      const rows = csv.split('\n').filter(r => r.trim());
+      const parsed = [];
+      const regex = /("([^"]*)"|([^,]+))/g;
+
+      // Skip header row
+      for (let i = 1; i < Math.min(rows.length, 101); i++) {
+        const matches = rows[i].matchAll(regex);
+        const row = Array.from(matches).map(m => m[2] || m[3] || '');
+        if (row.length >= 2) {
+          parsed.push({ role: row[0].replace(/^"|"$/g, '').trim(), prompt: row[1].replace(/^"|"$/g, '').trim() });
+        }
+      }
+
+      rolesData = parsed;
+      displayRoles(rolesData);
+    })
+    .catch(err => {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:#EF4444;">Failed to load roles.</div>';
+    });
+}
+
+function displayRoles(items) {
+  const grid = document.getElementById('rolesList');
+  if (!grid) return;
+
+  if (!items.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-secondary);">No roles matched your search.</div>';
+    return;
+  }
+
+  grid.innerHTML = items.map((r, index) => `
+    <div class="card" style="padding:16px;background:var(--bg-surface);border:1px solid var(--border-color);border-radius:12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;" onclick="openRoleModal(${index})">
+      <div style="font-weight:600;font-size:0.95rem;color:var(--accent-cyan);">Act as ${escHtml(r.role)}</div>
+      <div style="font-size:0.8125rem;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-height:1.4;">${escHtml(r.prompt)}</div>
+    </div>
+  `).join('');
+}
+
+function filterRoles(query) {
+  const filtered = rolesData.filter(r => 
+    r.role.toLowerCase().includes(query.toLowerCase()) || 
+    r.prompt.toLowerCase().includes(query.toLowerCase())
+  );
+  displayRoles(filtered);
+}
+
+window.openRoleModal = function(index) {
+  const role = rolesData[index];
+  if (!role) return;
+  const overlay = document.getElementById('modalOverlay');
+  const box = document.getElementById('modalContent');
+  if (!overlay || !box) return;
+
+  box.innerHTML = `
+    <div style="padding:24px;">
+      <h2 style="font-size:1.25rem;color:var(--accent-cyan);margin-bottom:12px;font-family:var(--font-mono);">Act as ${escHtml(role.role)}</h2>
+      <div style="background:var(--bg-body);padding:16px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:16px;">
+        <pre style="white-space:pre-wrap;font-family:inherit;font-size:0.9rem;color:var(--text-primary);line-height:1.5;">${escHtml(role.prompt)}</pre>
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="navigator.clipboard.writeText('${escAttr(role.prompt)}').then(() => alert('Prompt copied!'))">Copy Prompt</button>
+    </div>
+  `;
+  overlay.classList.add('active');
+};
 function setGithubView(view) {
   state.github.view = view;
   state.prefs.view = view;
