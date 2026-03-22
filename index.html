@@ -1318,9 +1318,10 @@ async function fetchWithTimeout(url, opts = {}, timeout = 10000) {
 }
 
 async function fetchViaCORS(url) {
-  const res = await fetchWithTimeout(CORS_PROXY + encodeURIComponent(url), {}, 15000);
-  const json = await res.json();
-  return json.contents;
+  // allorigins was returning 404 or timing out. corsproxy.io returns raw CORS-friendly text.
+  const proxy = 'https://corsproxy.io/?' + encodeURIComponent(url);
+  const res = await fetchWithTimeout(proxy, {}, 15000);
+  return await res.text();
 }
 
 // ─── GITHUB FETCH ────────────────────────────────────────────
@@ -1345,6 +1346,7 @@ async function fetchGitHub() {
       repos = data1.items.map(r => normalizeGithubRepo(r));
     }
     // Also try trending API (best-effort)
+    /* Currently disabled. API returns 451: Unavailable For Legal Reasons
     try {
       const res2 = await fetchWithTimeout(githubUrl(GITHUB_TRENDING_URL), {}, 8000);
       if (res2.ok) {
@@ -1356,7 +1358,8 @@ async function fetchGitHub() {
           });
         }
       }
-    } catch(e) { /* best effort */ }
+    } catch(e) { }
+    */
 
     state.github.repos = repos;
     state.github.filtered = repos;
@@ -1818,11 +1821,16 @@ function populateFilterDropdowns() {
   const maxStars = Math.max(...state.github.repos.map(r => r.stars||0), 1000);
   state.sliderMax = maxStars;
   state.sliderMaxVal = maxStars;
-  updateSliderUI();
+  if (typeof updateSliderUI === 'function') {
+    updateSliderUI();
+  } else if (window.updateSliderUI) {
+    window.updateSliderUI();
+  }
 }
 
 // ─── DUAL-HANDLE SLIDER ──────────────────────────────────────
 function initSlider() {
+  window.updateSliderUI = window.updateSliderUI || function() {};
   const container = document.getElementById('dualSlider');
   if (!container) return;
   const thumbMin = document.getElementById('thumbMin');
