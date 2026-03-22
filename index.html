@@ -2640,13 +2640,37 @@ window.openRoleModal = function(index) {
   box.innerHTML = `
     <div style="padding:24px;">
       <h2 style="font-size:1.25rem;color:var(--accent-cyan);margin-bottom:12px;font-family:var(--font-mono);">Act as ${escHtml(role.role)}</h2>
-      <div style="background:var(--bg-body);padding:16px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:16px;">
+      <div style="background:var(--bg-body);padding:16px;border-radius:8px;border:1px solid var(--border-color);margin-bottom:16px;max-height:400px;overflow-y:auto;">
         <pre style="white-space:pre-wrap;font-family:inherit;font-size:0.9rem;color:var(--text-primary);line-height:1.5;">${escHtml(role.prompt)}</pre>
       </div>
-      <button class="btn btn-primary" style="width:100%;" onclick="navigator.clipboard.writeText('${escAttr(role.prompt)}').then(() => alert('Prompt copied!'))">Copy Prompt</button>
+      <div style="display:flex;gap:12px;">
+        <button class="btn" style="flex:1;background:var(--accent-cyan);color:#000;font-weight:600;" onclick="window.copyPromptByIndex(${index})">Copy Prompt</button>
+        <button class="btn" style="flex:1;background:transparent;border:1px solid var(--border-color);color:var(--text-primary);" onclick="window.downloadPromptByIndex(${index})">Download .txt</button>
+      </div>
     </div>
   `;
   overlay.classList.add('active');
+};
+
+window.copyPromptByIndex = function(index) {
+  const role = rolesData[index];
+  if (role) {
+    navigator.clipboard.writeText(role.prompt).then(() => alert('Prompt copied!'));
+  }
+};
+
+window.downloadPromptByIndex = function(index) {
+  const role = rolesData[index];
+  if (!role) return;
+  const blob = new Blob([role.prompt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${role.role.replace(/[^A-Za-z0-9]/g, '_')}_prompt.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };
 function setGithubView(view) {
   state.github.view = view;
