@@ -1318,9 +1318,12 @@ async function fetchWithTimeout(url, opts = {}, timeout = 10000) {
 }
 
 async function fetchViaCORS(url) {
-  // allorigins was returning 404 or timing out. corsproxy.io returns raw CORS-friendly text.
-  const proxy = 'https://corsproxy.io/?' + encodeURIComponent(url);
+  let proxy = USE_PROXY 
+    ? '/.netlify/functions/news-proxy?url=' + encodeURIComponent(url)
+    : 'https://corsproxy.io/?' + encodeURIComponent(url);
+    
   const res = await fetchWithTimeout(proxy, {}, 15000);
+  if (!res.ok) throw new Error(`Proxy error: ${res.status}`);
   return await res.text();
 }
 
