@@ -23,9 +23,9 @@ exports.handler = async (event) => {
       // Abort controller for a reasonable timeout
       signal: AbortSignal.timeout(10000)
     });
-    
+
     const content = await response.text();
-    
+
     return {
       statusCode: response.status >= 400 ? 502 : 200,
       headers: {

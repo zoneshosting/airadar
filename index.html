@@ -60,6 +60,91 @@
       --z-modal: 1000;
     }
 
+    /* ===== Light Theme Overrides ===== */
+    :root.light-theme {
+      --bg-primary: #F4F5F7;
+      --bg-surface: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --border-color: #E5E7EB;
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --text-muted: #9CA3AF;
+    }
+
+    :root.light-theme .top-navbar {
+      background: rgba(255, 255, 255, 0.95);
+      border-bottom-color: #E5E7EB;
+    }
+
+    :root.light-theme .nav-search input {
+      background: #F3F4F6;
+      border-color: #E5E7EB;
+      color: #111827;
+    }
+    :root.light-theme .nav-search input::placeholder {
+      color: #9CA3AF;
+    }
+
+    :root.light-theme .nav-actions .btn-refresh {
+      border-color: #E5E7EB;
+      color: #4B5563;
+    }
+
+    :root.light-theme .nav-item {
+      color: #4B5563;
+    }
+    :root.light-theme .nav-item:hover {
+      background: rgba(0, 0, 0, 0.03);
+      color: #111827;
+    }
+    :root.light-theme .nav-item.active {
+      background: rgba(0, 212, 255, 0.08);
+      color: var(--color-primary);
+    }
+
+    :root.light-theme .sidebar-section {
+      border-color: #E5E7EB;
+    }
+    :root.light-theme .sidebar-section-title {
+      color: #6B7280;
+    }
+
+    :root.light-theme .filter-select,
+    :root.light-theme .filter-input {
+      background: #F9FAFB;
+      border-color: #E5E7EB;
+      color: #111827;
+    }
+
+    :root.light-theme .ticker-wrapper {
+      background: #F9FAFB;
+      border-bottom-color: #E5E7EB;
+    }
+    :root.light-theme #newsTickerWrapper .ticker-label {
+      background: #E5E7EB;
+      color: #374151;
+      border-right-color: #D1D5DB;
+    }
+
+    :root.light-theme .data-table th {
+      background: #F9FAFB;
+      color: #4B5563;
+      border-bottom-color: #E5E7EB;
+    }
+    :root.light-theme .card-grid .card,
+    :root.light-theme .modal-box {
+      background: #FFFFFF;
+      border-color: #E5E7EB;
+      color: #111827;
+    }
+    :root.light-theme .modal-overlay {
+      background: rgba(0,0,0,0.4);
+    }
+
+    :root.light-theme .skeleton {
+      background: #E5E7EB;
+    }
+
     /* ===== Reset & Base Styles ===== */
     * {
       box-sizing: border-box;
@@ -882,6 +967,100 @@
     .hidden { display: none !important; }
     .text-green { color: var(--color-accent-green); }
 
+    /* ===== Command Palette ===== */
+    .command-palette {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 14, 26, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      padding-top: 12vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 200ms ease;
+    }
+    :root.light-theme .command-palette {
+      background: rgba(244, 245, 247, 0.85);
+    }
+    .command-palette.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .palette-box {
+      width: 100%;
+      max-width: 600px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 50px rgba(0,0,0,0.6);
+      height: fit-content;
+      max-height: 480px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 200ms ease;
+    }
+    .command-palette.visible .palette-box {
+      transform: scale(1);
+    }
+    :root.light-theme .palette-box {
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .palette-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .palette-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+    .palette-results {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .palette-item {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 150ms ease;
+    }
+    .palette-item:hover, .palette-item.selected {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    :root.light-theme .palette-item:hover, :root.light-theme .palette-item.selected {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    .palette-item-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .palette-category {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      padding: 12px 16px 4px;
+      font-weight: 600;
+    }
+
   </style>
 </head>
 
@@ -918,11 +1097,18 @@
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" id="globalSearch" placeholder="Search repos, models, news…" autocomplete="off" aria-label="Global search">
+        <input type="text" id="globalSearch" placeholder="Search Dashboard (Ctrl + K)…" autocomplete="off" aria-label="Global search">
       </div>
 
       <div class="nav-actions">
         <span class="last-updated" id="lastUpdated">Never updated</span>
+
+        <button class="btn-icon" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Light/Dark" style="padding:8px;background:transparent;border:1px solid #1E2D4F;border-radius:8px;color:#94A3B8;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+
         <button class="btn-refresh" id="refreshBtn" onclick="triggerRefresh()" aria-label="Refresh data">
           <svg id="refreshIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
             <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
@@ -956,6 +1142,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span>Dashboard</span>
           </div>
+          <div class="nav-item" data-section="watchlist" onclick="navigateTo('watchlist')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>Watchlist</span>
+          </div>
           <div class="nav-item" data-section="github" onclick="navigateTo('github')">
             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
             <span>GitHub AI Projects</span>
@@ -978,6 +1168,26 @@
             <span>Trending Skills</span>
           </div>
         </nav>
+
+        <!-- Customize Panel -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-header" onclick="toggleSidebarSection('customizePanel')">
+            <span class="sidebar-section-title">Customize</span>
+            <svg id="customizePanelChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="transition:transform 200ms;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div id="customizePanel" class="filter-panel" style="display:flex;">
+            <div class="filter-group" style="margin-top:8px;">
+              <label>Accent Color</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                <button onclick="setAccent('#00D4FF')" style="width:24px;height:24px;border-radius:50%;background:#00D4FF;border:none;cursor:pointer;" title="Cyan (Default)"></button>
+                <button onclick="setAccent('#10B981')" style="width:24px;height:24px;border-radius:50%;background:#10B981;border:none;cursor:pointer;" title="Green"></button>
+                <button onclick="setAccent('#7C3AED')" style="width:24px;height:24px;border-radius:50%;background:#7C3AED;border:none;cursor:pointer;" title="Purple"></button>
+                <button onclick="setAccent('#EC4899')" style="width:24px;height:24px;border-radius:50%;background:#EC4899;border:none;cursor:pointer;" title="Pink"></button>
+                <button onclick="setAccent('#F59E0B')" style="width:24px;height:24px;border-radius:50%;background:#F59E0B;border:none;cursor:pointer;" title="Orange"></button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="sidebar-section" id="archiveSidebarSection">
           <div class="sidebar-section-header" onclick="toggleSidebarSection('archiveList')">
@@ -1027,6 +1237,73 @@
               <h1 class="section-title">Dashboard</h1>
               <p class="section-subtitle">Today's AI signal at a glance</p>
             </div>
+          </div>
+          
+          <div class="dashboard-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 24px;">
+            <!-- ROW 1: Radar View (Visual) -->
+            <div class="card" style="padding: 24px; display:flex; flex-direction:column; align-items:center; justify-content:center; grid-column: span 2; position:relative; overflow:hidden; min-height:380px; border-radius: 16px; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); border: 1px solid var(--border-color);">
+              <h3 style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 5px; position:absolute; top:24px; left:24px; letter-spacing: 2px;">LIVE SIGNAL RADAR</h3>
+              <canvas id="dashboardRadar" width="360" height="360" style="max-width:100%; height:auto; transition: filter 0.3s;"></canvas>
+            </div>
+            
+            <!-- ROW 1 Right: System Metrics -->
+            <div class="card" style="padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-surface); display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                 <h3 style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 24px; letter-spacing: 1px;">SYSTEM METRICS</h3>
+                 <div class="stat-item" style="display:flex; justify-content:space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom:12px;">
+                   <span>Models</span><span id="statHFModels" style="color:var(--accent-cyan);font-weight:600;">---</span>
+                 </div>
+                 <div class="stat-item" style="display:flex; justify-content:space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom:12px;">
+                   <span>Repos</span><span id="statTotalRepos" style="color:var(--accent-cyan);font-weight:600;">---</span>
+                 </div>
+                 <div class="stat-item" style="display:flex; justify-content:space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom:12px;">
+                   <span>Total Stars</span><span id="statTotalStars" style="color:var(--accent-cyan);font-weight:600;">---</span>
+                 </div>
+                 <div class="stat-item" style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+                   <span>News Items</span><span id="statNewsItems" style="color:var(--accent-cyan);font-weight:600;">---</span>
+                 </div>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size: 8px; color: #10B981;">●</span>
+                  <span style="font-size: 0.8rem; color: var(--text-secondary);">All Provider Systems Operational</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROW 2: Breakout & Tags -->
+            <div class="card" style="padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-surface);">
+              <h3 style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 16px; letter-spacing: 1px;">🔥 TOP BREAKOUTS</h3>
+              <div id="dashBreakout" style="display:flex; flex-direction:column; gap: 12px;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+            
+            <div class="card" style="padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-surface);">
+              <h3 style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 16px; letter-spacing: 1px;">🏷️ SIGNAL TAGS</h3>
+              <div id="dashTagCloud" style="display:flex; flex-wrap:wrap; gap:8px;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+            
+            <div class="card" style="padding: 24px; grid-column: span 2; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-surface);">
+              <h3 style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 16px; letter-spacing: 1px;">📰 RECENT NEWS PREVIEW</h3>
+              <div id="dashNewsPreview" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-section hidden" id="section-watchlist">
+          <div class="section-header">
+            <div>
+              <h1 class="section-title">My Watchlist</h1>
+              <p class="section-subtitle">Tracked repositories, models, and news</p>
+            </div>
+          </div>
+          <div id="watchlistContent" style="display:flex;flex-direction:column;gap:20px;">
+            <div style="text-align:center;padding:48px;color:#64748B;">Your watchlist is currently empty.</div>
           </div>
         </section>
 
@@ -1136,6 +1413,28 @@
       </main>
 
       <aside class="right-sidebar" id="rightSidebar">
+        <!-- Provider Status -->
+        <div class="sidebar-section" style="border-top:none; border-bottom:1px solid var(--border-color); padding-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#10B981;box-shadow:0 0 8px #10B981"></div>
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">Provider Status</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.75rem;">
+            <div style="display:flex;justify-content:space-between;color:var(--text-secondary);">
+              <span>OpenAI</span>
+              <span style="color:#10B981;">Operational</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;color:var(--text-secondary);">
+              <span>Anthropic</span>
+              <span style="color:#10B981;">Operational</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;color:var(--text-secondary);">
+              <span>Hugging Face</span>
+              <span style="color:#10B981;">Operational</span>
+            </div>
+          </div>
+        </div>
+
         <div class="trending-panel">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#00D4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -1152,6 +1451,18 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Command Palette -->
+  <div class="command-palette" id="commandPalette" onclick="closePalette(event)">
+    <div class="palette-box" onclick="event.stopPropagation()">
+      <div class="palette-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="palette-input" id="paletteInput" placeholder="Search anything (repos, models, news)…" autocomplete="off">
+        <div style="font-size:0.65rem;color:var(--text-muted);background:rgba(255,255,255,0.08);padding:3px 6px;border-radius:4px;">ESC</div>
+      </div>
+      <div class="palette-results" id="paletteResults"></div>
     </div>
   </div>
 
@@ -1228,7 +1539,7 @@ const state = {
   isOnline: navigator.onLine,
   searchQuery: '',
   readNews: new Set(),
-  prefs: { view: 'table', sidebarOpen: true, rightSidebarOpen: true, lastSection: 'dashboard' },
+  prefs: { view: 'table', sidebarOpen: true, rightSidebarOpen: true, lastSection: 'dashboard', theme: 'dark', accent: '#00D4FF', watchlist: [] },
   sliderMin: 0,
   sliderMax: 200000,
   sliderMinVal: 0,
@@ -1300,6 +1611,124 @@ function savePrefs() {
     localStorage.setItem('aiRadar_prefs', JSON.stringify(state.prefs));
     localStorage.setItem('aiRadar_readNews', JSON.stringify([...state.readNews]));
   } catch(e) {}
+}
+
+function applyTheme() {
+  const isLight = state.prefs.theme === 'light';
+  document.documentElement.classList.toggle('light-theme', isLight);
+  
+  const themeIcon = document.getElementById('themeIcon');
+  const btn = document.getElementById('themeToggle');
+  if (themeIcon) {
+    if (isLight) {
+      themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+      if (btn) btn.style.borderColor = '#E5E7EB';
+    } else {
+      themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+      if (btn) btn.style.borderColor = '#1E2D4F';
+    }
+  }
+
+  // Accent Color
+  const accent = state.prefs.accent || '#00D4FF';
+  document.documentElement.style.setProperty('--color-primary', accent);
+}
+
+function toggleTheme() {
+  state.prefs.theme = state.prefs.theme === 'light' ? 'dark' : 'light';
+  applyTheme();
+  savePrefs();
+}
+
+function setAccent(color) {
+  state.prefs.accent = color;
+  applyTheme();
+  savePrefs();
+}
+
+// ─── COMMAND PALETTE ────────────────────────────────────────
+function openPalette() {
+  const p = document.getElementById('commandPalette');
+  const input = document.getElementById('paletteInput');
+  const results = document.getElementById('paletteResults');
+  if (p && input) {
+    p.classList.add('visible');
+    input.value = '';
+    if (results) results.innerHTML = '<div style="text-align:center;padding:16px;color:#64748B;">Type to search dashboard…</div>';
+    setTimeout(() => input.focus(), 50);
+  }
+}
+
+function closePaletteDirect() {
+  const p = document.getElementById('commandPalette');
+  if (p) p.classList.remove('visible');
+}
+
+function closePalette(e) {
+  if (e.target.classList.contains('command-palette')) closePaletteDirect();
+}
+
+// Helper to escape values, fallback to global or define if missing
+function escHtml(str) { return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escAttr(str) { return escHtml(str); }
+
+function onPaletteSearch(query) {
+  const results = document.getElementById('paletteResults');
+  if (!results) return;
+  if (!query) {
+    results.innerHTML = '<div style="text-align:center;padding:16px;color:#64748B;">Type to search dashboard…</div>';
+    return;
+  }
+  const q = query.toLowerCase();
+  let html = '';
+
+  // 1. Repos
+  const repos = (state.github.repos || []).filter(r => (r.name||'').toLowerCase().includes(q) || (r.description||'').toLowerCase().includes(q)).slice(0, 5);
+  if (repos.length) {
+    html += '<div class="palette-category">Repositories</div>';
+    html += repos.map(r => `
+      <div class="palette-item" onclick="closePaletteDirect(); openRepoModal('${escAttr(r.name)}')">
+        <div class="palette-item-icon">⭐</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">${escHtml(r.name)}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);" class="truncate">${escHtml(r.description||'No description')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 2. Models
+  const models = (state.hf.models || []).filter(m => (m.id||'').toLowerCase().includes(q)).slice(0, 5);
+  if (models.length) {
+    html += '<div class="palette-category">Models</div>';
+    html += models.map(m => `
+      <div class="palette-item" onclick="closePaletteDirect(); window.open('https://huggingface.co/${escAttr(m.id)}','_blank')">
+        <div class="palette-item-icon">🤖</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">${escHtml(m.id)}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">Likes: ${m.likes}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 3. News
+  const news = (state.news.items || []).filter(n => (n.title||'').toLowerCase().includes(q)).slice(0, 5);
+  if (news.length) {
+    html += '<div class="palette-category">News</div>';
+    html += news.map(n => `
+      <div class="palette-item" onclick="closePaletteDirect(); openNewsModal('${escAttr(n.id)}')">
+        <div class="palette-item-icon">📰</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);">${escHtml(n.title)}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">${escHtml(n.sourceName)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (!html) html = '<div style="text-align:center;padding:16px;color:#64748B;">No matches found.</div>';
+  results.innerHTML = html;
 }
 
 // ─── SNAPSHOT CACHE ──────────────────────────────────────────
@@ -1992,6 +2421,83 @@ function navigateTo(section) {
   if (navItem) navItem.classList.add('active');
   if (section === 'archive') renderArchive();
   if (section === 'trending') renderTrendingSkills();
+  if (section === 'watchlist') renderWatchlist();
+}
+
+function toggleWatchlist(itemId) {
+  state.prefs.watchlist = state.prefs.watchlist || [];
+  const idx = state.prefs.watchlist.indexOf(itemId);
+  if (idx > -1) {
+    state.prefs.watchlist.splice(idx, 1);
+  } else {
+    state.prefs.watchlist.push(itemId);
+  }
+  savePrefs();
+  if (state.currentSection === 'watchlist') renderWatchlist();
+  
+  // Show tooltip
+  const t = document.getElementById('copyTooltip');
+  if (t) {
+    t.innerText = idx > -1 ? 'Removed from Watchlist' : 'Added to Watchlist';
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 1500);
+  }
+}
+
+function renderWatchlist() {
+  const container = document.getElementById('watchlistContent');
+  if (!container) return;
+  const list = state.prefs.watchlist || [];
+  if (!list.length) {
+    container.innerHTML = '<div style="text-align:center;padding:48px;color:#64748B;">Your watchlist is currently empty.</div>';
+    return;
+  }
+  
+  let html = '';
+  const matchedRepos = (state.github.repos || []).filter(r => list.includes(r.name));
+  const matchedModels = (state.hf.models || []).filter(m => list.includes(m.id));
+  const matchedNews = (state.news.items || []).filter(n => list.includes(n.id));
+
+  if (matchedRepos.length) {
+    html += '<h3 style="font-size:0.875rem;color:var(--text-secondary);margin:20px 0 10px;">Repositories</h3>';
+    html += `<div class="card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;">${
+      matchedRepos.map(r => `
+        <div class="card" style="position:relative;background:var(--bg-surface);border:1px solid var(--border-color);padding:16px;border-radius:12px;cursor:pointer;" onclick="openRepoModal('${escAttr(r.name)}')">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);padding-right:24px;">${escHtml(r.name)}</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:6px;" class="truncate-2">${escHtml(r.description || 'No description')}</div>
+          <div style="position:absolute;top:14px;right:14px;color:var(--color-primary);font-size:1.1rem;" onclick="event.stopPropagation(); toggleWatchlist('${escAttr(r.name)}')">★</div>
+        </div>
+      `).join('')
+    }</div>`;
+  }
+
+  if (matchedModels.length) {
+    html += '<h3 style="font-size:0.875rem;color:var(--text-secondary);margin:24px 0 10px;">Models</h3>';
+    html += `<div class="card-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:16px;">${
+      matchedModels.map(m => `
+        <div class="card" style="position:relative;background:var(--bg-surface);border:1px solid var(--border-color);padding:16px;border-radius:12px;cursor:pointer;" onclick="window.open('https://huggingface.co/${escAttr(m.id)}','_blank')">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);padding-right:24px;">${escHtml(m.id)}</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:6px;">Likes: ${m.likes}</div>
+          <div style="position:absolute;top:14px;right:14px;color:var(--color-primary);font-size:1.1rem;" onclick="event.stopPropagation(); toggleWatchlist('${escAttr(m.id)}')">★</div>
+        </div>
+      `).join('')
+    }</div>`;
+  }
+
+  if (matchedNews.length) {
+    html += '<h3 style="font-size:0.875rem;color:var(--text-secondary);margin:24px 0 10px;">News</h3>';
+    html += `<div class="card-grid" style="display:grid;gap:12px;">${
+      matchedNews.map(n => `
+        <div class="news-card" style="position:relative;background:var(--bg-surface);border:1px solid var(--border-color);padding:16px;border-radius:12px;cursor:pointer;border-left:3px solid ${escAttr(n.sourceColor||'#1E2D4F')};" onclick="openNewsModal('${escAttr(n.id)}')">
+          <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);padding-right:24px;">${escHtml(n.title)}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">${escHtml(n.sourceName)}</div>
+          <div style="position:absolute;top:16px;right:16px;color:var(--color-primary);font-size:1.1rem;" onclick="event.stopPropagation(); toggleWatchlist('${escAttr(n.id)}')">★</div>
+        </div>
+      `).join('')
+    }</div>`;
+  }
+
+  container.innerHTML = html;
 }
 
 function setGithubView(view) {
@@ -2419,6 +2925,110 @@ function renderDashboard() {
       </div>
     `).join('');
   }
+
+  // Dashboard Radar Visualizer Initializer
+  if (typeof initDashboardRadar === 'function') initDashboardRadar();
+}
+
+let dashboardRadarRaf = null;
+function initDashboardRadar() {
+  const canvas = document.getElementById('dashboardRadar');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const cx = width / 2;
+  const cy = height / 2;
+  const maxRadius = Math.min(cx, cy) - 20;
+
+  // Generate some points
+  const points = [];
+  const labels = ['LLaMA 3', 'GPT-4o', 'Claude 3.5 Sonnet', 'Stable Diffusion 3', 'Gemma 2', 'Mixtral', 'AudioCraft'];
+  for (let i = 0; i < labels.length; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 40 + Math.random() * (maxRadius - 60);
+    const speed = 0.002 + Math.random() * 0.003;
+    points.push({ angle, radius, label: labels[i], size: 4 + Math.random() * 4, opacity: 0 });
+  }
+
+  let sweepAngle = 0;
+  if (dashboardRadarRaf) cancelAnimationFrame(dashboardRadarRaf);
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+    const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-cyan').trim() || '#00D4FF';
+
+    // Draw concentric circles
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 1;
+    for (let r = 50; r <= maxRadius; r += 50) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Draw axis lines
+    ctx.beginPath();
+    ctx.moveTo(cx - maxRadius, cy); ctx.lineTo(cx + maxRadius, cy);
+    ctx.moveTo(cx, cy - maxRadius); ctx.lineTo(cx, cy + maxRadius);
+    ctx.stroke();
+
+    // Draw sweep
+    const sweepGradient = ctx.createLinearGradient(cx, cy, cx + Math.cos(sweepAngle - 0.4) * maxRadius, cy + Math.sin(sweepAngle - 0.4) * maxRadius);
+    sweepGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    sweepGradient.addColorStop(1, accentColor.replace('rgb', 'rgba').replace(')', ', 0.1)')); // Fallback failsafe
+    ctx.fillStyle = sweepGradient;
+    
+    // Better gradient sweep representation
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, maxRadius, sweepAngle - 0.5, sweepAngle);
+    ctx.closePath();
+    
+    ctx.fillStyle = accentColor.replace('#', 'rgba('); 
+    // Just simple stroke for stability:
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(sweepAngle) * maxRadius, cy + Math.sin(sweepAngle) * maxRadius);
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Draw points
+    for (const p of points) {
+      p.angle += 0.0012; // slow drift
+      const x = cx + Math.cos(p.angle) * p.radius;
+      const y = cy + Math.sin(p.angle) * p.radius;
+
+      // check sweep collision
+      const deltaAngle = (sweepAngle - p.angle + Math.PI * 2) % (Math.PI * 2);
+      if (deltaAngle < 0.5) {
+        p.opacity = 1.0;
+      } else {
+        p.opacity *= 0.98; // fade
+      }
+
+      if (p.opacity > 0.01) {
+        ctx.beginPath();
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = accentColor.replace(')', `, ${p.opacity})`); // assumption
+        // Safer approach for color:
+        ctx.fillStyle = `rgba(0, 212, 255, ${p.opacity})`; 
+        ctx.shadowColor = accentColor;
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = `rgba(226, 232, 240, ${p.opacity * 0.8})`;
+        ctx.font = '10px monospace';
+        ctx.fillText(p.label, x + 8, y + 3);
+      }
+    }
+
+    sweepAngle = (sweepAngle + 0.02) % (Math.PI * 2);
+    dashboardRadarRaf = requestAnimationFrame(draw);
+  }
+  draw();
 }
 
 function setStatValue(id, val) {
@@ -2847,6 +3457,7 @@ function timeAgo(dateStr) {
   // ─── INIT ────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function() {
     loadPrefs();
+    applyTheme();
     initParticles();
     initScanLine();
     initSlider();
@@ -2864,6 +3475,23 @@ function timeAgo(dateStr) {
       searchEl.addEventListener('input', e => onGlobalSearch(e.target.value));
       searchEl.addEventListener('focus', () => { searchEl.style.borderColor = '#00D4FF'; });
       searchEl.addEventListener('blur', () => { searchEl.style.borderColor = '#1E2D4F'; });
+    }
+
+    // Command Palette Trigger
+    document.addEventListener('keydown', (e) => {
+      // open with Ctrl+K or Cmd+K
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        openPalette();
+      }
+      if (e.key === 'Escape') {
+        closePaletteDirect();
+      }
+    });
+
+    const paletteInput = document.getElementById('paletteInput');
+    if (paletteInput) {
+      paletteInput.addEventListener('input', e => onPaletteSearch(e.target.value));
     }
 
     // Wire archive search
